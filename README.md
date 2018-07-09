@@ -29,7 +29,7 @@ So there we go. React for the front-end, Mongo/ Mongoose for the db, and Node/ E
 - Email/ Ticket/ Chat/ Twitter online status are set to false if operator is away. This means that operators will not display on the toggle page if they're away on every client. Proper way to implement would be to get the status of each individual client for each operator. Displaying every opterator, despite their online status, would work too. My way should work for the purposes of this project, though.
 - I need to implement some sort of timer to poll the BoldChat server for any changes to the userers status
 - Chart does not refresh despite me putting in a time to poll user counts. I think that it's just my unfamiliarity with how react works, but i'd like to try to get this working.
-- The toggle switches seem to fire off sometimes on their own. I haven't seen this happening for quite some time, but i'm digging into it to make sure that the issue is resolved.
+- I'm not completely sure what's going on with the toggle switches, but it seems like they sometimes just stop working after having the server on for a while. Haven't been aple to inestigate.
 - I think that the toggle switches were designed to spite desktop users. You need to drag your mouse to actually toggle the switch. This enusres that the user really wants to toggle the status (100% a feature, just like my minimalistic design).
 
 ## App Components
