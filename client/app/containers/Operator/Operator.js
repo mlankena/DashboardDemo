@@ -86,6 +86,7 @@ class Operator extends Component {
         function switchBuilder(operator) {
             let returnElements = [];
             let operatorID = operator.OperatorID;
+            console.log(operator);
             // this is gross. Redo this
             //console.log("In builder");
             if(operator.EmailAvailable){

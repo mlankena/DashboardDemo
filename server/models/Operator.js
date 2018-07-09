@@ -11,7 +11,7 @@ var Schema = mongoose.Schema({
     EmailAvailable: Boolean,
     FacebookAvailable: Boolean,
     TicketAvailable: Boolean,
-    ChatAvaialble: Boolean,
+    ChatAvailable: Boolean,
     TwitterAvailable: Boolean
 })
 

@@ -60,7 +60,7 @@ module.exports = (app) => {
                             EmailAvailable: operator.EmailService.Available,
                             FacebookAvailable: operator.FacebookService.Available,
                             TicketAvailable: operator.TicketService.Available,
-                            ChatAvaialble: operator.ChatService.Available,
+                            ChatAAvailable: operator.ChatService.Available,
                             TwitterAvailable: operator.TwitterService.Available
                         }
                         operatorsToSave.push(operatorObject);
