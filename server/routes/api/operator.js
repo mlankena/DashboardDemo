@@ -86,6 +86,81 @@ module.exports = (app) => {
             })
     });
 
+    app.post('/api/operator/updateOperators', (req, res) => {
+        let results = [];
+        let url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/getOperators?auth=' + authHash
+        request
+            .get(url)
+            .then(async (response)=> {
+                try {
+                    let jsonObject = JSON.parse(response.text);
+                    return jsonObject
+                } catch(e) {
+                    // todo: implement proper error handling
+                    let jsonObject = {};
+                }
+            
+            })
+            .then(async (jsonObject) => {
+                if (jsonObject.Status == "success" && jsonObject.Truncated == false) {
+                    let responseData = jsonObject.Data;
+                    let operatorsToSave = [];
+                    let errorArray = [];
+                    let savedOperators = [];
+                    await asyncForEach(responseData, async (operator, i) => {
+                        let foundOperator = await findOperator(operator.OperatorID);
+                        if(foundOperator != null) { // Operator is in DB. Update their status.
+                            let updateObject = {
+                                EmailAvailable: operator.EmailService.Available,
+                                FacebookAvailable: operator.FacebookService.Available,
+                                TicketAvailable: operator.TicketService.Available,
+                                ChatAAvailable: operator.ChatService.Available,
+                                TwitterAvailable: operator.TwitterService.Available
+                            }
+                            await Operator.update({OperatorID:operator.OperatorID}, updateObject, async (err, saved)=>{
+                                if(err){
+                                    errorArray.push(err);
+                                } else{
+                                    savedOperators.push(saved);
+                                }
+                            })
+                        } else { // this is a new operator. We need to save this operator to the local db.
+                            let operatorObject = {
+                                OperatorID: operator.LoginID,
+                                Name: operator.Name,
+                                EmailAvailable: operator.EmailService.Available,
+                                FacebookAvailable: operator.FacebookService.Available,
+                                TicketAvailable: operator.TicketService.Available,
+                                ChatAAvailable: operator.ChatService.Available,
+                                TwitterAvailable: operator.TwitterService.Available
+                            }
+                            let newOperator = new Operator(operatorObject);
+                            newOperator.save((err) => {
+                                if(err){
+                                    errorArray.push(err)
+                                } else {
+                                    savedOperators.push(newOperator);
+                                }
+                            })
+                        }
+                    });
+                    if(errorArray != responseData.length || responseData.length == 0) {
+                        res.send({
+                            success: true,
+                            message: 'Operators updated',
+                            results: savedOperators
+                        });
+                    } else {
+                        res.send({
+                            success: false,
+                            message: 'Error updateing operators',
+                            results: errorArray
+                        });
+                    }
+                }
+            })
+    })
+
     // check for operators that are online anywhere
     app.get('/api/operator/getOnlineOperators', (req, res) => {
         Operator.find().or([{EmailAvailable: true}, {FacebookAvailable: true},{TicketAvailable: true}, {ChatAvaialble: true}, {TwitterAvailable: true}])

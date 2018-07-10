@@ -19,6 +19,7 @@ class Operator extends Component {
 
         }
         this.initializeDatabase = this.initializeDatabase.bind(this);
+        this.updateOperators = this.updateOperators.bind(this);
     }
 
     // Check if there are any operators in our database. If not, initialize the database by calling the BoldChat getOperators() api
@@ -45,6 +46,7 @@ class Operator extends Component {
             console.log("initializing db");
             await this.initializeDatabase();
         }
+        await this.updateOperators()
         await axios.get('/api/operator/getOnlineOperators') // show all operators that are online on at least one service platform
         .then(res => {
             if(res.data.success == true) {
@@ -55,6 +57,13 @@ class Operator extends Component {
                 //console.log(this.state.onlineOperators);
             }
         });
+    }
+
+    async updateOperators() {
+        axios.post('/api/operator/updateOperators')
+        .then(res => {
+            console.log(res);
+        })
     }
     async initializeDatabase(){
         console.log("initializing db");
