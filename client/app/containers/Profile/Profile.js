@@ -63,7 +63,7 @@ class Profile extends Component {
     }
 
     componentDidMount(){
-        this.timeID = setInterval(()=>{
+        this.timerID = setInterval(()=>{
             if(this.state.isLoading == false){
                 this.updateChatRecords();
             }

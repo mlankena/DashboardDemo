@@ -17,7 +17,8 @@ class Operator extends Component {
         this.state = {
             isLoading:true,
             onlineOperators:[],
-
+            lastUpdatedDate: Date.now(),
+            lastRenderedDate: Date.now()
         }
         this.initializeDatabase = this.initializeDatabase.bind(this);
         this.updateOperators = this.updateOperators.bind(this);
@@ -53,26 +54,49 @@ class Operator extends Component {
             if(res.data.success == true) {
                 this.setState({
                     isLoading:false,
-                    onlineOperators:res.data.results
+                    onlineOperators:res.data.results,
+                    lastUpdatedDate:Date.now()
                 });
                 //console.log(this.state.onlineOperators);
             }
         });
     }
 
+    componentDidMount(){
+        this.timerID = setInterval(async ()=>{
+            if(this.state.isLoading == false){
+                await this.updateOperators();
+                await axios.get('/api/operator/getOnlineOperators') // show all operators that are online on at least one service platform
+                .then(res => {
+                    if(res.data.success == true) {
+                        this.setState({
+                            isLoading:false,
+                            onlineOperators:res.data.results,
+                            lastUpdatedDate:Date.now()
+                        });
+                        //console.log(this.state.onlineOperators);
+                    }
+                });
+            }
+        }, 10000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID);
+    }
+
     async updateOperators() {
         axios.post('/api/operator/updateOperators')
         .then(res => {
-            console.log(res);
+            //console.log(res);
         })
     }
     async initializeDatabase(){
         console.log("initializing db");
         await axios.post('/api/operator/saveAllOperators')
         .then(json => {
-            console.log("json keys " + Object.keys(json));
             if (json.success) {
-                console.log(json);
+                //console.log(json);
                 this.setState({
                     isLoading: true
                 }); 
@@ -89,14 +113,15 @@ class Operator extends Component {
     render(){
         const{
             isLoading,
-            onlineOperators
+            onlineOperators,
+            lastUpdatedDate,
+            lastRenderedDate
         } = this.state;
         // switchBuilder initializes the TSwitch components and sets their switch status based on the operators availability
         // todo: display all service type switches for each operator 
         function switchBuilder(operator) {
             let returnElements = [];
             let operatorID = operator.OperatorID;
-            console.log(operator);
             // this is gross. Redo this
             //console.log("In builder");
             if(operator.EmailAvailable){
@@ -121,29 +146,39 @@ class Operator extends Component {
             }
             return returnElements;
         }
-        return (
-            <div className="well">
-            <div> 
-                <h3>Operators</h3>
-                <Grid>
-                <ListGroup xsoffset={1}>
-                    {
-                        onlineOperators.map(function(operator, i){
-                            let returnElements = [];
-                            let onlineElements = switchBuilder(operator);
-                            //console.log(operator)
+        if(lastRenderedDate == null || lastRenderedDate < lastUpdatedDate){ 
+            return (
+                <div className="well">
+                <div> 
+                    <h3>Operators</h3>
+                    <Grid>
+                    <ListGroup xsoffset={1}>
+                        {
+                            onlineOperators.map(function(operator, i){
+                                let returnElements = [];
+                                let onlineElements = switchBuilder(operator);
+                                //console.log(operator)
 
-                            returnElements.push(<ListGroupItem>{operator.Name}</ListGroupItem>);
-                            returnElements.push(onlineElements);
-                            <br />
-                            return returnElements
-                        })
-                    }
-                </ListGroup>
-                </Grid>
-            </div>
-            </div>
-        )
+                                returnElements.push(<ListGroupItem>{operator.Name}</ListGroupItem>);
+                                returnElements.push(onlineElements);
+                                <br />
+                                return returnElements
+                            })
+                        }
+                    </ListGroup>
+                    </Grid>
+                </div>
+                </div>
+            )
+        } else {
+            return (
+                <div className="well">
+                <div> 
+                    <h3>Operators</h3>
+                </div>
+                </div>
+            )
+        }
     }
 }
 

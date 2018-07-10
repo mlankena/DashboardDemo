@@ -15,7 +15,6 @@ class TSwitch extends React.Component {
 
     constructor ( props ) {
         super( props );
-        console.log("props available: " + props.available);
 		this.state = {
             checked: props.available
         }
@@ -52,7 +51,7 @@ class TSwitch extends React.Component {
                             }
                         })
                         .then(json => {
-                            console.log("Switched to online " + json);
+                            //console.log("Switched to online " + json);
                         })
                         break;
                     case 2: 
