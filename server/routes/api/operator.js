@@ -35,6 +35,7 @@ module.exports = (app) => {
      */
     app.post('/api/operator/saveAllOperators', function(req, res){
         let results = [];
+        auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
         let url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/getOperators?auth=' + authHash
         request
             .get(url)
@@ -88,6 +89,8 @@ module.exports = (app) => {
 
     app.post('/api/operator/updateOperators', (req, res) => {
         let results = [];
+        auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
+        authHash = auth + ':' + CryptoJS.SHA512(auth + apiKey).toString(CryptoJS.enc.Hex);
         let url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/getOperators?auth=' + authHash
         request
             .get(url)
@@ -198,6 +201,7 @@ module.exports = (app) => {
      * }
      */
     app.get('/api/operator/getAvailability', async (req, res) => {
+        auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
         authHash = auth + ':' + CryptoJS.SHA512(auth + apiKey).toString(CryptoJS.enc.Hex);
         let url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/getOperatorAvailability?auth=' + authHash
         request
@@ -226,7 +230,9 @@ module.exports = (app) => {
      * Set availability of operator through BoldChat API and save operator status in db to save switch state
      */
     app.get('/api/operator/setAvailability', async(req, res) => {
+        auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
         authHash = auth + ':' + CryptoJS.SHA512(auth + apiKey).toString(CryptoJS.enc.Hex);
+        console.log("Setting availability with auth hash: " + authHash);
         let url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/setOperatorAvailability?auth=' + authHash
         request
             .get(url)
@@ -237,9 +243,10 @@ module.exports = (app) => {
             .then(response=>{
                 try{
                     let jsonObject = JSON.parse(response.text);
+                    console.log("setting availability return json");
                     return jsonObject
                 } catch(e){
-
+                    console.log("setting availability error " + e);
                 }
             })
             .then(async jsonObject => {

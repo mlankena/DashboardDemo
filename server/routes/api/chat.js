@@ -42,6 +42,8 @@ module.exports = (app) => {
      */
     app.post('/api/chat/getAllChatMessages', function (req, res, next) {
         var results = [];
+        auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
+        authHash = auth + ':' + CryptoJS.SHA512(auth + apiKey).toString(CryptoJS.enc.Hex);
         var url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/getAllChatMessages?auth=' + authHash;
         request
         .get(url)
@@ -116,6 +118,8 @@ module.exports = (app) => {
             console.log("returning " + chats.length);
             const updateChats = async() => {
                 await asyncForEach(chats, async (key, i) => {
+                    auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
+                    authHash = auth + ':' + CryptoJS.SHA512(auth + apiKey).toString(CryptoJS.enc.Hex);
                     var url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/getChat?auth=' + authHash;
                     await request
                         .get(url)
@@ -218,6 +222,8 @@ module.exports = (app) => {
      * Find most recent chat in our database. Poll BoldChat server to see if any chats were made after most recent date. Check if chatID is already in database. Save if not. 
      */
     app.get('/api/chat/findAndSaveNewChats', async (req, res) => {
+        auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
+        authHash = auth + ':' + CryptoJS.SHA512(auth + apiKey).toString(CryptoJS.enc.Hex);
         var url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/getAllChatMessages?auth=' + authHash;
         try{
             const foundChat = await findNewestChat()
