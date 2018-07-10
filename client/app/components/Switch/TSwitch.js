@@ -98,10 +98,7 @@ class TSwitch extends React.Component {
             return json.data
         })
     }
-
-    setAvailability() {
-
-    }
+    
     render() {
         return (
           <label htmlFor="normal-switch">

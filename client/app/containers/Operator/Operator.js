@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import TSwitch from '../../components/Switch/TSwitch'
 import regeneratorRuntime from "regenerator-runtime";
+import {well, ListGroup, ListGroupItem, Grid, Row, Col} from 'react-bootstrap';
 
 /**
  * Operator
@@ -121,20 +122,26 @@ class Operator extends Component {
             return returnElements;
         }
         return (
+            <div className="well">
             <div> 
-                <p>Operators</p>
-                <ul>
+                <h3>Operators</h3>
+                <Grid>
+                <ListGroup xsoffset={1}>
                     {
                         onlineOperators.map(function(operator, i){
                             let returnElements = [];
                             let onlineElements = switchBuilder(operator);
                             //console.log(operator)
-                            returnElements.push(<li>{operator.Name}</li>);
+
+                            returnElements.push(<ListGroupItem>{operator.Name}</ListGroupItem>);
                             returnElements.push(onlineElements);
+                            <br />
                             return returnElements
                         })
                     }
-                </ul>
+                </ListGroup>
+                </Grid>
+            </div>
             </div>
         )
     }
