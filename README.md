@@ -1,6 +1,6 @@
 # Read Me
 
-I was give the task of creating a dashboard that displays the desktop visitors and mobile visitors of a site by using the BoldChat Data Extraction API, and to also implement a button that changes that availability status of an operator. Multiple challenges were faced during the devlopment of this app, but in the end, I think that I was able to pull together a functional dashboard.
+I was given the task of creating a dashboard that displays the desktop visitors and mobile visitors of a site by using the BoldChat Data Extraction API, and to also implement a button that changes that availability status of an operator. Multiple challenges were faced during the devlopment of this app, but in the end, I think that I was able to pull together a functional dashboard.
 
 ## How to run
 1. Make sure that you have npm and MongoDB installed
