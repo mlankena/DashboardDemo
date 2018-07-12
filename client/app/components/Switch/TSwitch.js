@@ -18,6 +18,7 @@ class TSwitch extends React.Component {
 		this.state = {
             checked: props.available,
             updateDate: props.updateDate,
+            operatorID: props.operatorID,
             renderDate: null
         }
         this.getAvailability = this.getAvailability.bind(this);
@@ -78,7 +79,9 @@ class TSwitch extends React.Component {
             }
         }
         await checkAvailability();
-        this.setState({ checked });
+        this.setState({ 
+            checked 
+        });
     }
 
     // get status type from service
@@ -110,7 +113,7 @@ class TSwitch extends React.Component {
             <Switch
               onChange={this.handleChange}
               checked={this.state.checked}
-              id="normal-switch"
+              key={this.operatorID}
             />
             </div>
           </label>

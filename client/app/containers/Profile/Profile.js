@@ -15,6 +15,7 @@ class Profile extends Component {
             lastUpdated: null
         };
         this.initializeDatabase = this.initializeDatabase.bind(this);
+        this.updateChatRecords = this.updateChatRecords.bind(this);
     }
 
     async componentWillMount() {
@@ -37,6 +38,7 @@ class Profile extends Component {
         if(chatCount == 0 || chatCount == null){
             await this.initializeDatabase();
         } else {
+            await this.updateChatRecords();
             axios.get('/api/chat/getDesktopVisitors')
             .then(res => {
                 if(res.data.success == true) {
@@ -147,8 +149,8 @@ class Profile extends Component {
             .then(res => {
                 res.data
             })
-            .then(() => {
-                axios.get('/api/chat/getDesktopVisitors')
+            .then(async () => {
+                await axios.get('/api/chat/getDesktopVisitors')
                 .then(res => {
                     if(res.data.success == true) {
                         this.setState({
@@ -159,8 +161,8 @@ class Profile extends Component {
                     }
                 });
             })
-            .then(() => {
-                axios.get('/api/chat/getMobileVisitors')
+            .then(async () => {
+                await axios.get('/api/chat/getMobileVisitors')
                 .then(res => {
                     if(res.data.success == true) {
                         this.setState({

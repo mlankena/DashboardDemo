@@ -78,7 +78,7 @@ class Operator extends Component {
                 })
                 await axios.get('/api/operator/getOnlineOperators') // show all operators that are online on at least one service platform
                 .then(res => {
-                    console.log(res.data.results);
+                    //console.log(res.data.results);
                     if(res.data.success == true) {
                         this.setState({
                             isLoading:false,
@@ -129,32 +129,15 @@ class Operator extends Component {
             lastRenderedDate
         } = this.state;
         // switchBuilder initializes the TSwitch components and sets their switch status based on the operators availability
-        // todo: display all service type switches for each operator 
         function switchBuilder(operator) {
             let returnElements = [];
             let operatorID = operator.OperatorID;
             // this is gross. Redo this
             //console.log("In builder");
-            if(operator.EmailAvailable){
-                returnElements.push(<TSwitch label="Email" operator={operatorID} ServiceType="3" available={true} updatedDate={lastUpdatedDate}>Email Avaialble</TSwitch>);
-            } else{
-                returnElements.push(<TSwitch label="Email" operator={operatorID} ServiceType="3" available={false} updatedDate={lastUpdatedDate}>Email Avaialble</TSwitch>);
-            }
-            if(operator.TicketAvailable){
-                returnElements.push(<TSwitch label="Ticket" operator={operatorID} ServiceType="5" available={true} updatedDate={lastUpdatedDate}>Ticket Avaialble</TSwitch>);
-            }else{
-                returnElements.push(<TSwitch label="Ticket" operator={operatorID} ServiceType="5" available={false} updatedDate={lastUpdatedDate}>Ticket Avaialble</TSwitch>);
-            }
-            if(operator.ChatAvailable){
-                returnElements.push(<TSwitch label="Chat" operator={operatorID} ServiceType="1" available={true} updatedDate={lastUpdatedDate}>Chat Avaialble</TSwitch>);
-            }else{
-                returnElements.push(<TSwitch label="Chat" operator={operatorID} ServiceType="1" available={false} updatedDate={lastUpdatedDate}>Chat Avaialble</TSwitch>);
-            }
-            if(operator.TwitterAvailable){
-                returnElements.push(<TSwitch label="Twitter" operator={operatorID} ServiceType="10" available={true} updatedDate={lastUpdatedDate}>Twitter Avaialble</TSwitch>);
-            }else{
-                returnElements.push(<TSwitch label="Twitter" operator={operatorID} ServiceType="10" available={false} updatedDate={lastUpdatedDate}>Twitter Avaialble</TSwitch>);
-            }
+            returnElements.push(<TSwitch label="Email" operator={operatorID} ServiceType="3" available={operator.EmailAvailable} updatedDate={lastUpdatedDate}>Email Avaialble</TSwitch>);
+            returnElements.push(<TSwitch label="Ticket" operator={operatorID} ServiceType="5" available={operator.TicketAvailable} updatedDate={lastUpdatedDate}>Ticket Avaialble</TSwitch>);
+            returnElements.push(<TSwitch label="Chat" operator={operatorID} ServiceType="1" available={operator.ChatAvailable} updatedDate={lastUpdatedDate}>Chat Avaialble</TSwitch>);
+            returnElements.push(<TSwitch label="Twitter" operator={operatorID} ServiceType="10" available={operator.TwitterAvailable} updatedDate={lastUpdatedDate}>Twitter Avaialble</TSwitch>);
             return returnElements;
         }
         if(lastRenderedDate == null || lastRenderedDate < lastUpdatedDate){
