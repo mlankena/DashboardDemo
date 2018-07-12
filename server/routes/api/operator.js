@@ -110,23 +110,26 @@ module.exports = (app) => {
                     let operatorsToSave = [];
                     let errorArray = [];
                     let savedOperators = [];
+                    //console.log(responseData)
                     await asyncForEach(responseData, async (operator, i) => {
-                        let foundOperator = await findOperator(operator.OperatorID);
+                        let foundOperator = await findOperator(operator.LoginID);
                         if(foundOperator != null) { // Operator is in DB. Update their status.
                             let updateObject = {
                                 EmailAvailable: operator.EmailService.Available,
                                 FacebookAvailable: operator.FacebookService.Available,
                                 TicketAvailable: operator.TicketService.Available,
-                                ChatAAvailable: operator.ChatService.Available,
+                                ChatAvailable: operator.ChatService.Available,
                                 TwitterAvailable: operator.TwitterService.Available
                             }
-                            await Operator.update({OperatorID:operator.OperatorID}, updateObject, async (err, saved)=>{
+                            //console.log("Updating operator " + operator.LoginID)
+                            //console.log
+                            await Operator.update({OperatorID:operator.LoginID}, updateObject, async (err, saved)=>{
                                 if(err){
                                     errorArray.push(err);
                                 } else{
                                     savedOperators.push(saved);
                                 }
-                            })
+                            });
                         } else { // this is a new operator. We need to save this operator to the local db.
                             let operatorObject = {
                                 OperatorID: operator.LoginID,
@@ -166,7 +169,7 @@ module.exports = (app) => {
 
     // check for operators that are online anywhere
     app.get('/api/operator/getOnlineOperators', (req, res) => {
-        Operator.find().or([{EmailAvailable: true}, {FacebookAvailable: true},{TicketAvailable: true}, {ChatAvaialble: true}, {TwitterAvailable: true}])
+        Operator.find().or([{EmailAvailable: true}, {FacebookAvailable: true},{TicketAvailable: true}, {ChatAvailable: true}, {TwitterAvailable: true}])
         .then(operators => {
             res.send({
                 success: true,
@@ -232,7 +235,6 @@ module.exports = (app) => {
     app.get('/api/operator/setAvailability', async(req, res) => {
         auth = accountId + ':' + apiKeyId + ':' + (new Date()).getTime();
         authHash = auth + ':' + CryptoJS.SHA512(auth + apiKey).toString(CryptoJS.enc.Hex);
-        console.log("Setting availability with auth hash: " + authHash);
         let url = 'https://api.boldchat.com/aid/706505873793485629/data/rest/json/v2/setOperatorAvailability?auth=' + authHash
         request
             .get(url)
@@ -243,7 +245,7 @@ module.exports = (app) => {
             .then(response=>{
                 try{
                     let jsonObject = JSON.parse(response.text);
-                    console.log("setting availability return json");
+                    //console.log("setting availability return json");
                     return jsonObject
                 } catch(e){
                     console.log("setting availability error " + e);

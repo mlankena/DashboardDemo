@@ -16,7 +16,9 @@ class TSwitch extends React.Component {
     constructor ( props ) {
         super( props );
 		this.state = {
-            checked: props.available
+            checked: props.available,
+            updateDate: props.updateDate,
+            renderDate: null
         }
         this.getAvailability = this.getAvailability.bind(this);
         this.handleChange = this.handleChange.bind(this);

@@ -31,9 +31,9 @@ class Operator extends Component {
             return await axios.get('/api/operator/getOperatorCount') // do we have at least one operator in the database?
                 .then(res=>res.data)
                 .then((res)=>{
-                    console.log("ran " + Object.keys(res));
+                    //console.log("ran " + Object.keys(res));
                     if(res.success){
-                        console.log("results " + res.results);
+                        //console.log("results " + res.results);
                         return res.results
                     } else{
                         return null;
@@ -48,6 +48,9 @@ class Operator extends Component {
             console.log("initializing db");
             await this.initializeDatabase();
         }
+        this.setState({
+            lastRenderedDate: Date.now()
+        }) 
         await this.updateOperators()
         await axios.get('/api/operator/getOnlineOperators') // show all operators that are online on at least one service platform
         .then(res => {
@@ -62,12 +65,20 @@ class Operator extends Component {
         });
     }
 
+    /**
+     * todo: implement a "needs to update function" where I diff the online operators in the state agains the return object
+     */
+
     componentDidMount(){
         this.timerID = setInterval(async ()=>{
             if(this.state.isLoading == false){
                 await this.updateOperators();
+                this.setState({
+                    lastRenderedDate:Date.now()
+                })
                 await axios.get('/api/operator/getOnlineOperators') // show all operators that are online on at least one service platform
                 .then(res => {
+                    console.log(res.data.results);
                     if(res.data.success == true) {
                         this.setState({
                             isLoading:false,
@@ -125,28 +136,28 @@ class Operator extends Component {
             // this is gross. Redo this
             //console.log("In builder");
             if(operator.EmailAvailable){
-                returnElements.push(<TSwitch label="Email" operator={operatorID} ServiceType="3" available={true}>Email Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Email" operator={operatorID} ServiceType="3" available={true} updatedDate={lastUpdatedDate}>Email Avaialble</TSwitch>);
             } else{
-                returnElements.push(<TSwitch label="Email" operator={operatorID} ServiceType="3" available={false}>Email Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Email" operator={operatorID} ServiceType="3" available={false} updatedDate={lastUpdatedDate}>Email Avaialble</TSwitch>);
             }
             if(operator.TicketAvailable){
-                returnElements.push(<TSwitch label="Ticket" operator={operatorID} ServiceType="5" available={true}>Ticket Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Ticket" operator={operatorID} ServiceType="5" available={true} updatedDate={lastUpdatedDate}>Ticket Avaialble</TSwitch>);
             }else{
-                returnElements.push(<TSwitch label="Ticket" operator={operatorID} ServiceType="5" available={false}>Ticket Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Ticket" operator={operatorID} ServiceType="5" available={false} updatedDate={lastUpdatedDate}>Ticket Avaialble</TSwitch>);
             }
             if(operator.ChatAvailable){
-                returnElements.push(<TSwitch label="Chat" operator={operatorID} ServiceType="1" available={true}>Chat Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Chat" operator={operatorID} ServiceType="1" available={true} updatedDate={lastUpdatedDate}>Chat Avaialble</TSwitch>);
             }else{
-                returnElements.push(<TSwitch label="Chat" operator={operatorID} ServiceType="1" available={false}>Chat Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Chat" operator={operatorID} ServiceType="1" available={false} updatedDate={lastUpdatedDate}>Chat Avaialble</TSwitch>);
             }
             if(operator.TwitterAvailable){
-                returnElements.push(<TSwitch label="Twitter" operator={operatorID} ServiceType="10" available={true}>Twitter Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Twitter" operator={operatorID} ServiceType="10" available={true} updatedDate={lastUpdatedDate}>Twitter Avaialble</TSwitch>);
             }else{
-                returnElements.push(<TSwitch label="Twitter" operator={operatorID} ServiceType="10" available={false}>Twitter Avaialble</TSwitch>);
+                returnElements.push(<TSwitch label="Twitter" operator={operatorID} ServiceType="10" available={false} updatedDate={lastUpdatedDate}>Twitter Avaialble</TSwitch>);
             }
             return returnElements;
         }
-        if(lastRenderedDate == null || lastRenderedDate < lastUpdatedDate){ 
+        if(lastRenderedDate == null || lastRenderedDate < lastUpdatedDate){
             return (
                 <div className="well">
                 <div> 
